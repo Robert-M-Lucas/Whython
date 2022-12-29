@@ -7,7 +7,7 @@ char _b = "b"
 char _x = "x"
 char _ = " "
 
-while i != 15
+while i != 100
     i += 1
     f += 1
     b += 1
@@ -15,6 +15,7 @@ while i != 15
     if f == 3
         f = 0
         if b == 5
+            b = 0
             out _x
         else
             out _f
