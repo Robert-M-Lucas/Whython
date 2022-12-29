@@ -1,0 +1,52 @@
+int i = 0
+int fizz = 0
+int buzz = 0
+bool fizzbuzz_check = false
+bool fizz_check = false
+bool buzz_check = false
+bool not_printed = true
+
+int fizzbuzz_n = 15
+int fizz_n = 3
+int buzz_n = 5
+
+bool running = true
+int max = 100
+
+while running
+    i += 1
+    fizz += 1
+    buzz += 1
+    fizz_check = fizz == fizz_n
+    buzz_check = buzz == buzz_n
+    not_printed = true
+
+    fizzbuzz_check = fizz_check == true
+    if fizzbuzz_check
+        fizzbuzz_check = buzz_check == true
+
+        if fizzbuzz_check
+            out fizzbuzz_n
+            not_printed = false
+            fizz = 0
+            buzz = 0
+            fizz_check = false
+            buzz_check = false
+
+    if fizz_check
+        out fizz_n
+        not_printed = false
+        fizz = 0
+
+    if buzz_check
+        out buzz_n
+        not_printed = false
+        buzz = 0
+
+    if not_printed
+        out i
+
+    running = i != max
+
+int c = 123
+out c
