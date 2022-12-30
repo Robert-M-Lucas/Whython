@@ -13,6 +13,7 @@
 #include "../Instructions/CopyInstruction.h"
 #include "../Instructions/AddInstruction.h"
 #include "../Instructions/EqualsInstruction.h"
+#include "../Instructions/SubtractInstruction.h"
 
 extern bool DEBUG;
 
@@ -78,6 +79,10 @@ int IntType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op
 int IntType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op, ADDR modify_with, ADDR out_addr) {
     if (op == "+") {
         blockHandler->PManager->Append(AddInstruction::Build(to_modify, modify_with, out_addr, 4));
+        return GetID();
+    }
+    else if (op == "-") {
+        blockHandler->PManager->Append(SubtractInstruction::Build(to_modify, modify_with, out_addr, 4));
         return GetID();
     }
     else if (op == "==") {

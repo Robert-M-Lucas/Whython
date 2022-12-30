@@ -1,27 +1,7 @@
-int f = 0
-int b = 0
-int i = 0
+int a = 100
 
-char _f = "f"
-char _b = "b"
-char _x = "x"
-char _ = " "
+while a != -100
+    a -= 1
+    out a
 
-while i != 100
-    i += 1
-    f += 1
-    b += 1
-
-    if f == 3
-        f = 0
-        if b == 5
-            b = 0
-            out _x
-        else
-            out _f
-    else
-        if b == 5
-            b = 0
-            out _b
-        else
-            out i
+out a

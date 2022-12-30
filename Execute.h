@@ -93,14 +93,72 @@ void Execute(CompileResult compiled) {
             bool carry = false;
             for (unsigned char j = size-1; j <= size; j--) {
                 unsigned char v = compiled.v_memory[to_modify+j];
-                unsigned char vc = v;
                 v += compiled.v_memory[modify_with+j];
                 if (carry)
                     v += 1;
-                carry = v < vc; // ! Overflow
+                carry = (v < compiled.v_memory[to_modify+j]) || (v < compiled.v_memory[modify_with+j]) ||
+                        (v == compiled.v_memory[to_modify+j] && carry) || (v == compiled.v_memory[modify_with+j] && carry); // ! Overflow
                 compiled.v_memory[out_addr+j] = v;
             }
 
+            i += 7;
+        }
+        else if (code == 9) { // * SUBTRACT
+            ADDR to_modify = bytesToShort(compiled.p_memory + i);
+            ADDR modify_with = bytesToShort(compiled.p_memory + (i + 2));
+            ADDR out_addr = bytesToShort(compiled.p_memory + (i + 4));
+            unsigned char size = *(compiled.p_memory + (i + 6));
+
+            BYTE* modify_with_copy = (BYTE*) malloc(size);
+            memcpy(modify_with_copy, compiled.v_memory + modify_with, size);
+
+            /*
+            for (int j = 0; j < 4; j++) {
+                for(int k = 7; k >= 0; k--){
+                    int tmp = ( compiled.v_memory[modify_with + j] >> k ) & 0x1;
+                    cout << tmp;
+                }
+            }
+            cout << endl;
+             */
+
+            // * Invert
+            bool inverting = false;
+            for (int j = size - 1; j >= 0; j--) {
+                BYTE byte = *(modify_with_copy + j);
+                if (inverting) {
+                    *(modify_with_copy + j) = ~byte;
+                }
+                else {
+                    BYTE byte_out = 0x00;
+                    for (int k = 0; k < 8; k++) {
+                        BYTE bit = (byte >> k) & 0x01; // Get single bit on right
+                        if (inverting) {
+                            if (bit == 0x01) bit = 0x00;
+                            else bit = 0x01;
+                        }
+                        else {
+                            if (bit == 0x01) inverting = true;
+                        }
+                        bit = bit << k; // Shift bit back to right
+                        byte_out = byte_out | bit; // Recombine with out
+                    }
+                    *(modify_with_copy + j) = byte_out;
+                }
+            }
+
+            bool carry = false;
+            for (unsigned char j = size-1; j <= size; j--) {
+                unsigned char v = compiled.v_memory[to_modify+j];
+                v += *(modify_with_copy + j);
+                if (carry)
+                    v += 1;
+                carry = (v < compiled.v_memory[to_modify+j]) || (v < *(modify_with_copy + j)) ||
+                        (v == compiled.v_memory[to_modify+j] && carry) || (v == *(modify_with_copy + j) && carry); // ! Overflow
+                compiled.v_memory[out_addr+j] = v;
+            }
+
+            free(modify_with_copy);
             i += 7;
         }
         else if (code == 5 || code == 6) { // * EQUALS & NOT EQUALS

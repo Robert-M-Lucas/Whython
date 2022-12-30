@@ -18,7 +18,7 @@ ADDR MemoryManager::Alloc(int amount) {
 
     BYTE* new_memory = nullptr;
     if (memory == nullptr)
-        new_memory = (BYTE*)malloc(new_size);
+        new_memory = (BYTE*)calloc(new_size, 1);
     else
         new_memory = (BYTE*)realloc(memory, new_size);
 
