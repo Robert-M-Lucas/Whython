@@ -35,13 +35,13 @@ public:
 
 extern bool DEBUG;
 
-CompileResult Compile() {
+CompileResult Compile(char* file_location) {
     auto* VManager = new MemoryManager("VarMemory");
     auto* PManager = new MemoryManager("ProgMemory");
     auto* currentBlockHandler = new BlockHandler(nullptr, nullptr, PManager, VManager);
 
     fstream file;
-    file.open("Data\\data.why", ios::in);
+    file.open(file_location, ios::in);
 
     string line;
     int l = 0;
@@ -83,6 +83,9 @@ CompileResult Compile() {
         }
 
         file.close();
+    }
+    else {
+        throw invalid_argument("File does not exist");
     }
 
     int v_size = VManager->GetSize();

@@ -64,7 +64,7 @@ void MemoryManager::Append(const BYTE *data, int size) {
 
 void MemoryManager::DumpBytes() {
     ofstream stream;
-    stream.open("data\\" + name + " - dump.b");
+    stream.open(name + " - dump.b");
     if (!stream)
         cout << "Opening file failed" << endl;
     // use operator << for clarity

@@ -11,22 +11,27 @@ bool DEBUG = false; // * Extern
 
 int main(int argc, char *argv[])
 {
-    if (argc >= 2 && (argv[1][0] == 'd' || argv[1][0] == 'D'))
-        DEBUG = true;
-
     cout << "Whython " << VERSION << endl;
+
+    if (argc < 2) {
+        cout << "No file provided" << endl;
+        return -1;
+    }
+
+    if (argc >= 3 && (argv[2][0] == 'd' || argv[2][0] == 'D'))
+        DEBUG = true;
 
     cout << "Compiling... " << endl;
     auto start = chrono::high_resolution_clock::now();
 
     try {
-        CompileResult result = Compile();
+        CompileResult result = Compile(argv[1]);
 
         auto end = chrono::high_resolution_clock::now();
         chrono::duration<double, std::milli> ms_double = end-start;
         cout << "Time taken: " << ms_double.count() << "ms" << endl;
 
-        cout << "Executing... " << endl << endl;
+        cout << "Executing... " << endl << "---------" << endl;
 
         start = chrono::high_resolution_clock::now();
 
@@ -39,7 +44,7 @@ int main(int argc, char *argv[])
         std::ios::sync_with_stdio(true);
 
         ms_double = end-start;
-        cout << endl << "Time taken: " << ms_double.count() << "ms" << endl;
+        cout << endl << "---------" << endl << "Time taken: " << ms_double.count() << "ms" << endl;
 
         return 2;
     }
