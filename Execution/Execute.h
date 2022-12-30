@@ -7,9 +7,9 @@
 
 #include <iostream>
 
-#include "Util/Common.h"
-#include "Util/Conversions.h"
-#include "Compile.h"
+#include "../Util/Common.h"
+#include "../Util/Conversions.h"
+#include "../Compilation/Compile.h"
 
 using namespace std;
 

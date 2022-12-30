@@ -5,7 +5,7 @@
 #ifndef PLANG3_IFBLOCK_H
 #define PLANG3_IFBLOCK_H
 
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "BlockController.h"
 
 class IfBlock : public BlockController {

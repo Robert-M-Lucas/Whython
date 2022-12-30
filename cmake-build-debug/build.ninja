@@ -55,17 +55,17 @@ build CMakeFiles/PLang3.dir/main.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/r
   OBJECT_DIR = CMakeFiles\PLang3.dir
   OBJECT_FILE_DIR = CMakeFiles\PLang3.dir
 
-build CMakeFiles/PLang3.dir/MemoryManager.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/MemoryManager.cpp || cmake_object_order_depends_target_PLang3
-  DEP_FILE = CMakeFiles\PLang3.dir\MemoryManager.cpp.obj.d
+build CMakeFiles/PLang3.dir/Compilation/MemoryManager.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/Compilation/MemoryManager.cpp || cmake_object_order_depends_target_PLang3
+  DEP_FILE = CMakeFiles\PLang3.dir\Compilation\MemoryManager.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   OBJECT_DIR = CMakeFiles\PLang3.dir
-  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir
+  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir\Compilation
 
-build CMakeFiles/PLang3.dir/BlockHandler.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/BlockHandler.cpp || cmake_object_order_depends_target_PLang3
-  DEP_FILE = CMakeFiles\PLang3.dir\BlockHandler.cpp.obj.d
+build CMakeFiles/PLang3.dir/Compilation/BlockHandler.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/Compilation/BlockHandler.cpp || cmake_object_order_depends_target_PLang3
+  DEP_FILE = CMakeFiles\PLang3.dir\Compilation\BlockHandler.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   OBJECT_DIR = CMakeFiles\PLang3.dir
-  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir
+  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir\Compilation
 
 build CMakeFiles/PLang3.dir/Blocks/BlockController.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/Blocks/BlockController.cpp || cmake_object_order_depends_target_PLang3
   DEP_FILE = CMakeFiles\PLang3.dir\Blocks\BlockController.cpp.obj.d
@@ -91,11 +91,11 @@ build CMakeFiles/PLang3.dir/Blocks/WhileBlock.cpp.obj: CXX_COMPILER__PLang3_Debu
   OBJECT_DIR = CMakeFiles\PLang3.dir
   OBJECT_FILE_DIR = CMakeFiles\PLang3.dir\Blocks
 
-build CMakeFiles/PLang3.dir/LineHandler.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/LineHandler.cpp || cmake_object_order_depends_target_PLang3
-  DEP_FILE = CMakeFiles\PLang3.dir\LineHandler.cpp.obj.d
+build CMakeFiles/PLang3.dir/Compilation/LineHandler.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/Compilation/LineHandler.cpp || cmake_object_order_depends_target_PLang3
+  DEP_FILE = CMakeFiles\PLang3.dir\Compilation\LineHandler.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++23
   OBJECT_DIR = CMakeFiles\PLang3.dir
-  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir
+  OBJECT_FILE_DIR = CMakeFiles\PLang3.dir\Compilation
 
 build CMakeFiles/PLang3.dir/Types/IntType.cpp.obj: CXX_COMPILER__PLang3_Debug C$:/Users/rober/Documents/C++$ Projects/PLang3/Types/IntType.cpp || cmake_object_order_depends_target_PLang3
   DEP_FILE = CMakeFiles\PLang3.dir\Types\IntType.cpp.obj.d
@@ -159,7 +159,7 @@ build CMakeFiles/PLang3.dir/Types/CharType.cpp.obj: CXX_COMPILER__PLang3_Debug C
 #############################################
 # Link the executable PLang3.exe
 
-build PLang3.exe: CXX_EXECUTABLE_LINKER__PLang3_Debug CMakeFiles/PLang3.dir/main.cpp.obj CMakeFiles/PLang3.dir/MemoryManager.cpp.obj CMakeFiles/PLang3.dir/BlockHandler.cpp.obj CMakeFiles/PLang3.dir/Blocks/BlockController.cpp.obj CMakeFiles/PLang3.dir/Preprocessing/LexicalAnalyser.cpp.obj CMakeFiles/PLang3.dir/References/ReferenceHandler.cpp.obj CMakeFiles/PLang3.dir/Blocks/WhileBlock.cpp.obj CMakeFiles/PLang3.dir/LineHandler.cpp.obj CMakeFiles/PLang3.dir/Types/IntType.cpp.obj CMakeFiles/PLang3.dir/Util/Conversions.cpp.obj CMakeFiles/PLang3.dir/Util/Common.cpp.obj CMakeFiles/PLang3.dir/Blocks/LoopBlock.cpp.obj CMakeFiles/PLang3.dir/Types/BoolType.cpp.obj CMakeFiles/PLang3.dir/Blocks/IfBlock.cpp.obj CMakeFiles/PLang3.dir/Util/BoolTools.cpp.obj CMakeFiles/PLang3.dir/Util/TypeGetter.cpp.obj CMakeFiles/PLang3.dir/Types/CharType.cpp.obj
+build PLang3.exe: CXX_EXECUTABLE_LINKER__PLang3_Debug CMakeFiles/PLang3.dir/main.cpp.obj CMakeFiles/PLang3.dir/Compilation/MemoryManager.cpp.obj CMakeFiles/PLang3.dir/Compilation/BlockHandler.cpp.obj CMakeFiles/PLang3.dir/Blocks/BlockController.cpp.obj CMakeFiles/PLang3.dir/Preprocessing/LexicalAnalyser.cpp.obj CMakeFiles/PLang3.dir/References/ReferenceHandler.cpp.obj CMakeFiles/PLang3.dir/Blocks/WhileBlock.cpp.obj CMakeFiles/PLang3.dir/Compilation/LineHandler.cpp.obj CMakeFiles/PLang3.dir/Types/IntType.cpp.obj CMakeFiles/PLang3.dir/Util/Conversions.cpp.obj CMakeFiles/PLang3.dir/Util/Common.cpp.obj CMakeFiles/PLang3.dir/Blocks/LoopBlock.cpp.obj CMakeFiles/PLang3.dir/Types/BoolType.cpp.obj CMakeFiles/PLang3.dir/Blocks/IfBlock.cpp.obj CMakeFiles/PLang3.dir/Util/BoolTools.cpp.obj CMakeFiles/PLang3.dir/Util/TypeGetter.cpp.obj CMakeFiles/PLang3.dir/Types/CharType.cpp.obj
   FLAGS = -g
   LINK_FLAGS = -static
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32

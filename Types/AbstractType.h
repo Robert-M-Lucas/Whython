@@ -8,7 +8,7 @@
 #include <string>
 #include <climits>
 
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 
 using namespace std;
 

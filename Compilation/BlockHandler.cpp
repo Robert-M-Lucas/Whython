@@ -3,9 +3,9 @@
 //
 
 #include "BlockHandler.h"
-#include "Blocks/LoopBlock.h"
-#include "Blocks/WhileBlock.h"
-#include "Blocks/IfBlock.h"
+#include "../Blocks/LoopBlock.h"
+#include "../Blocks/WhileBlock.h"
+#include "../Blocks/IfBlock.h"
 #include "LineHandler.h"
 
 extern bool DEBUG;

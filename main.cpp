@@ -1,7 +1,7 @@
 #include <chrono>
 
-#include "Compile.h"
-#include "Execute.h"
+#include "Compilation/Compile.h"
+#include "Execution/Execute.h"
 
 const char* VERSION = "v0.1";
 

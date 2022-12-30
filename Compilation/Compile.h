@@ -12,11 +12,11 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "Util/Common.h"
+#include "../Util/Common.h"
 #include "MemoryManager.h"
 #include "BlockHandler.h"
-#include "Preprocessing/LexicalAnalyser.h"
-#include "Preprocessing/LexicalResult.h"
+#include "../Preprocessing/LexicalAnalyser.h"
+#include "../Preprocessing/LexicalResult.h"
 
 class CompileResult {
 public:

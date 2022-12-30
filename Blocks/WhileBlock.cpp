@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 #include "WhileBlock.h"
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "../Instructions/EqualsInstruction.h"
 #include "../Instructions/GotoInstruction.h"
 #include "../Instructions/GotoIfInstruction.h"
@@ -18,7 +18,6 @@ void WhileBlock::OnEnter(BlockHandler *oldBlockHandler, BlockHandler *newBlockHa
         throw invalid_argument("While must be followed by a boolean");
 
     if (entryLine.size() == 4) {
-        // TODO
         constant = false;
         entryAddr = newBlockHandler->PManager->GetCurrentPosition();
         nameAddr = ExpressionToBoolReference(newBlockHandler, entryLine[1], entryLine[2].Value, entryLine[3]);

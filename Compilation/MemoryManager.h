@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include "Util/Common.h"
+#include "../Util/Common.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ public:
 
     void Append(vector<BYTE> data);
 
-    void Append(const BYTE* data, int size);
+    [[maybe_unused]] void Append(const BYTE* data, int size);
 
     BYTE* GetPointer() { return memory; }
 

@@ -3,11 +3,11 @@
 //
 
 #include "LineHandler.h"
-#include "Types/AbstractType.h"
-#include "Types/IntType.h"
-#include "Types/BoolType.h"
-#include "Instructions/OutInstruction.h"
-#include "Util/TypeGetter.h"
+#include "../Types/AbstractType.h"
+#include "../Types/IntType.h"
+#include "../Types/BoolType.h"
+#include "../Instructions/OutInstruction.h"
+#include "../Util/TypeGetter.h"
 
 // template <typename T, int N> char(&dim_helper(T(&)[N]))[N];
 // #define dim(x) (sizeof(dim_helper(x)))

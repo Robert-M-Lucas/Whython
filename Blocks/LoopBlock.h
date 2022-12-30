@@ -5,7 +5,7 @@
 #ifndef PLANG3_LOOPBLOCK_H
 #define PLANG3_LOOPBLOCK_H
 
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "BlockController.h"
 
 

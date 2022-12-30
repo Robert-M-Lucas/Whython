@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include "Preprocessing/LexicalResult.h"
+#include "../Preprocessing/LexicalResult.h"
 #include "BlockHandler.h"
 
 using namespace std;

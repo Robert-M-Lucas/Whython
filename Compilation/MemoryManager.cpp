@@ -6,7 +6,7 @@
 #include <fstream>
 #include <cstring>
 
-#include "Util/Common.h"
+#include "../Util/Common.h"
 #include "MemoryManager.h"
 
 extern bool DEBUG;
@@ -16,7 +16,7 @@ using namespace std;
 ADDR MemoryManager::Alloc(int amount) {
     int new_size = m_size + amount;
 
-    BYTE* new_memory = nullptr;
+    BYTE* new_memory;
     if (memory == nullptr)
         new_memory = (BYTE*)calloc(new_size, 1);
     else

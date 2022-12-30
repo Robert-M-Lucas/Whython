@@ -5,7 +5,7 @@
 #include <stdexcept>
 
 #include "IfBlock.h"
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "../Instructions/EqualsInstruction.h"
 #include "../Instructions/GotoInstruction.h"
 #include "../Instructions/GotoIfInstruction.h"
@@ -19,7 +19,6 @@ void IfBlock::OnEnter(BlockHandler *oldBlockHandler, BlockHandler *newBlockHandl
         throw invalid_argument("If must be followed by a boolean");
 
     if (entryLine.size() == 4) {
-        // TODO
         constant = false;
         nameAddr = ExpressionToBoolReference(newBlockHandler, entryLine[1], entryLine[2].Value, entryLine[3]);
         entryAddr = newBlockHandler->PManager->Alloc(GotoIfInstruction::GetLength());

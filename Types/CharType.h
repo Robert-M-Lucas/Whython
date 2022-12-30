@@ -7,7 +7,7 @@
 
 
 #include "AbstractType.h"
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 
 class CharType: public AbstractType {
 public:

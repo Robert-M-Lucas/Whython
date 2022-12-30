@@ -5,7 +5,7 @@
 #ifndef PLANG3_WHILEBLOCK_H
 #define PLANG3_WHILEBLOCK_H
 
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "BlockController.h"
 
 class WhileBlock : public BlockController {

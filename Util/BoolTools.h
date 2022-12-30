@@ -6,7 +6,7 @@
 #define PLANG3_BOOLTOOLS_H
 
 #include "Common.h"
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 #include "../Types/AbstractType.h"
 #include "TypeGetter.h"
 

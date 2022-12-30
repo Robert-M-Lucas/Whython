@@ -6,7 +6,7 @@
 #define PLANG3_BOOLTYPE_H
 
 #include "AbstractType.h"
-#include "../BlockHandler.h"
+#include "../Compilation/BlockHandler.h"
 
 class BoolType: public AbstractType {
 public:

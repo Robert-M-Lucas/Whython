@@ -8,9 +8,9 @@
 #include <iostream>
 #include <vector>
 
-#include "References/ReferenceHandler.h"
+#include "../References/ReferenceHandler.h"
 #include "MemoryManager.h"
-#include "Blocks/BlockController.h"
+#include "../Blocks/BlockController.h"
 
 using namespace std;
 
