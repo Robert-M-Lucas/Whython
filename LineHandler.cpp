@@ -120,16 +120,36 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
     }
     // * Start with keyword e.g. out a
     else if (parsedLine.at(0).Type == Keyword) {
-        if (parsedLine[0].Value == "out") {
-            if (parsedLine.size() != 2 || parsedLine[1].Type != Name)
-                throw invalid_argument("Out must be followed by name");
+        if (parsedLine[0].Value == "out" || parsedLine[0].Value == "outnl") {
+            ADDR addr;
+            unsigned short typeID;
 
-            Reference* ref = blockHandler->RecursivelyGetReference(parsedLine[1].Value);
+            if (parsedLine.size() != 2)
+                throw invalid_argument("Out must be followed something");
 
-            blockHandler->PManager->Append(OutInstruction::Build(ref->Address, ref->TypeID));
+            if (parsedLine[1].Type == Name) {
+                Reference* ref = blockHandler->RecursivelyGetReference(parsedLine[1].Value);
+                addr = ref->Address;
+                typeID = ref -> TypeID;
+            }
+            else if (parsedLine[1].Type == IntLiteral) {
+                addr = IntType().Create(blockHandler, "");
+                IntType::StaticAssign(blockHandler, addr, stois(parsedLine[1].Value));
+                typeID = IntType().TYPE_ID;
+            }
+            else if (parsedLine[1].Type == StringLiteral && parsedLine[1].Value.size() == 1) {
+                addr = CharType().Create(blockHandler, "");
+                CharType::StaticAssign(blockHandler, addr, parsedLine[1].Value[0]);
+                typeID = CharType().TYPE_ID;
+            }
+            else {
+                throw invalid_argument("Unsupported out type");
+            }
+
+            blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl"));
         }
         else {
-            throw invalid_argument("Keyword '" + parsedLine[0].Value + "' not currently supported");
+            throw invalid_argument("Keyword '" + parsedLine[0].Value + "' not supported");
         }
     }
     else if (parsedLine.at(0).Type == Empty) {} // * Ignore empty line

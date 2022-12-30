@@ -14,7 +14,7 @@ const char digits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 const string LexicalAnalyser::assigners[] = { "=", "+=", "-=", "*=", "/=" };
 const string LexicalAnalyser::blockers[] = { "while", "loop", "if", "else" };
 const string LexicalAnalyser::operators[] = { "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "|", "&" };
-const string LexicalAnalyser::keywords[] = { "out" };
+const string LexicalAnalyser::keywords[] = { "out", "outnl" };
 const string LexicalAnalyser::types[] = { "int", "bool", "char" };
 
 LexicalResult LexicalAnalyser::ProcessSymbol(string symbolString, int depth) {

@@ -50,25 +50,29 @@ void Execute(CompileResult compiled) {
             compiled.v_memory[address] = compiled.p_memory[i + 2]; // Write value to addr
             i += 3;
         }
-        else if (code == 1) { // * OUT
+        else if (code == 1 || code == 10) { // * OUT
             ADDR address = bytesToShort(compiled.p_memory + i); // Read addr
             unsigned short type = bytesToShort(compiled.p_memory + (i + 2));
             switch (type) {
                 case 0: // OUT INT
-                    cout << bytesToInt(compiled.v_memory + address) << F_ENDL;
+                    cout << bytesToInt(compiled.v_memory + address);
                     break;
                 case 1: // OUT BOOL
                     if (*(compiled.v_memory + address) == BOOL_FALSE)
-                        cout << "false" << F_ENDL;
+                        cout << "false";
                     else
-                        cout << "true" << F_ENDL;
+                        cout << "true";
                     break;
                 case 2: // OUT char
-                    cout << *(compiled.v_memory + address) << F_ENDL;
+                    cout << *(compiled.v_memory + address);
                     break;
                 default:
-                    cout << "Type [" << type << "] doesn't support out" << F_ENDL;
+                    cout << "Type [" << type << "] doesn't support out";
             }
+
+            if (code == 10)
+                cout << F_ENDL;
+
             i += 4;
         }
         else if (code == 2) { // * GOTO

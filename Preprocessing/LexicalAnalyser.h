@@ -16,7 +16,7 @@ class LexicalAnalyser {
     const static string assigners[5];
     const static string blockers[4];
     const static string operators[12];
-    const static string keywords[1];
+    const static string keywords[2];
     const static string types[3];
 public:
     static LexicalResult ProcessSymbol(string symbolString, int depth);
