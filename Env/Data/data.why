@@ -1,7 +1,5 @@
-int a = 100
+char a = 0
 
-while a != -100
-    a -= 1
+while true
     out a
-
-out a
+    a += 1

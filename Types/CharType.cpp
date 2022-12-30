@@ -11,6 +11,7 @@
 #include "../Instructions/AddInstruction.h"
 #include "../Instructions/EqualsInstruction.h"
 #include "BoolType.h"
+#include "../Instructions/SubtractInstruction.h"
 
 extern bool DEBUG;
 
@@ -37,6 +38,20 @@ void CharType::Assign(BlockHandler* blockHandler, ADDR address, char value) {
     blockHandler->PManager->Append(WriteInstruction::Build(address, value));
 }
 
+void CharType::Assign(BlockHandler *blockHandler, ADDR address, const LexicalResult &literalValue) {
+    if (literalValue.Type == StringLiteral) {
+        if (literalValue.Value.size() != 1)
+            throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
+        Assign(blockHandler, address, literalValue.Value[0]);
+    }
+    else if (literalValue.Type == IntLiteral) {
+        int int_val = stois(literalValue.Value);
+        Assign(blockHandler, address, (char)int_val);
+    }
+    else
+        throw invalid_argument("Only Int and String Literals supported");
+}
+
 void CharType::StaticAssign(BlockHandler* blockHandler, ADDR address, char value) {
     if (DEBUG)
         cout << "Creating static char assign instruction [" << value << ";" << address << "]" << endl;
@@ -49,11 +64,16 @@ void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Le
         cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
 
     ADDR addr = CharType::Create(blockHandler, "");
-    if (overwrite_with.Type != StringLiteral || overwrite_with.Value.size() != 1) {
-        throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
+    if (overwrite_with.Type == StringLiteral) {
+        if (overwrite_with.Value.size() != 1)
+            throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
+        CharType::StaticAssign(blockHandler, addr, overwrite_with.Value[0]);
     }
-
-    CharType::StaticAssign(blockHandler, addr, overwrite_with.Value[0]);
+    else if (overwrite_with.Type == IntLiteral) {
+        int int_val = stois(overwrite_with.Value);
+        CharType::StaticAssign(blockHandler, addr, (char)int_val);
+    }
+    else throw invalid_argument("Only Int and String Literals supported");
 
     CharType::Overwrite(blockHandler, to_overwrite, addr);
 }
@@ -66,20 +86,35 @@ void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR ove
 
 int CharType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op, const LexicalResult& literalValue, ADDR out_addr) {
     ADDR addr = CharType::Create(blockHandler, "");
-    if (literalValue.Type != StringLiteral || literalValue.Value.size() != 1) {
-        throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
-    }
 
-    CharType::StaticAssign(blockHandler, addr, literalValue.Value[0]);
+    if (literalValue.Type == StringLiteral) {
+        if (literalValue.Value.size() != 1)
+            throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
+        CharType::StaticAssign(blockHandler, addr, literalValue.Value[0]);
+    }
+    else if (literalValue.Type == IntLiteral) {
+        int int_val = stois(literalValue.Value);
+        CharType::StaticAssign(blockHandler, addr, (char)int_val);
+    }
+    else throw invalid_argument("Only Int and String Literals supported");
+
     return CharType::Modify(blockHandler, to_modify, op, addr, out_addr);
 }
 
 int CharType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op, ADDR modify_with, ADDR out_addr) {
-    if (op == "==") {
+    if (op == "+") {
+        blockHandler->PManager->Append(AddInstruction::Build(to_modify, modify_with, out_addr, 1));
+        return GetID();
+    }
+    else if (op == "-") {
+        blockHandler->PManager->Append(SubtractInstruction::Build(to_modify, modify_with, out_addr, 1));
+        return GetID();
+    }
+    else if (op == "==") {
         blockHandler->PManager->Append(EqualsInstruction::Build(to_modify, modify_with, out_addr, 1));
         return BoolType().GetID();
     }
-    if (op == "!=") {
+    else if (op == "!=") {
         blockHandler->PManager->Append(EqualsInstruction::Build(to_modify, modify_with, out_addr, 1, true));
         return BoolType().GetID();
     }

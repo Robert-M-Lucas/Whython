@@ -19,11 +19,7 @@ public:
 
     ADDR Create(BlockHandler* blockHandler, const string& name) override;
 
-    void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) override {
-        if (literalValue.Type != StringLiteral) throw invalid_argument("Only string literals supported for assignment");
-        if (literalValue.Value.size() != 1) throw invalid_argument("Only support string literals of length 1");
-        Assign(blockHandler, address, literalValue.Value[0]);
-    }
+    void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) override;
 
     static void Assign(BlockHandler* blockHandler, ADDR address, char value);
 
