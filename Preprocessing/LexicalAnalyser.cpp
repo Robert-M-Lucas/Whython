@@ -14,7 +14,7 @@ const char digits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 const string LexicalAnalyser::assigners[] = { "=", "+=", "-=", "*=", "/=" };
 const string LexicalAnalyser::blockers[] = { "while", "loop", "if", "else" };
 const string LexicalAnalyser::operators[] = { "+", "-", "*", "/", ">", "<", ">=", "<=", "==", "!=", "|", "&" };
-const string LexicalAnalyser::keywords[] = { "out", "outnl" };
+const string LexicalAnalyser::keywords[] = { "out", "outnl", "nlout" };
 const string LexicalAnalyser::types[] = { "int", "bool", "char" };
 
 LexicalResult LexicalAnalyser::ProcessSymbol(string symbolString, int depth) {
@@ -74,6 +74,17 @@ LexicalResult LexicalAnalyser::ProcessSymbol(string symbolString, int depth) {
     for (const auto & i : operators) {
         if (symbolString == i) {
             return {Operator, depth, symbolString};
+        }
+    }
+
+    int pos1 = symbolString.find('[');
+    if (pos1 != string::npos) {
+        int pos2 = symbolString.find(']');
+        if (pos2 != string::npos) {
+            if (pos2 == pos1 + 1 && pos2 == symbolString.size() - 1) // * arrName[]
+                return {ArrName, depth, symbolString.substr(0, symbolString.size()-2)};
+            else if (pos2 > pos1)
+                return {ArrMember, depth, symbolString};
         }
     }
 

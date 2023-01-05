@@ -19,7 +19,7 @@ extern bool DEBUG;
 
 using namespace std;
 
-ADDR IntType::Create(BlockHandler* blockHandler, const string& name) {
+ADDR IntType::Create(BlockHandler *blockHandler, const string &name, int arrSize) {
     ADDR address = blockHandler->VManager->Alloc(4);
 
     if (DEBUG)
@@ -28,7 +28,7 @@ ADDR IntType::Create(BlockHandler* blockHandler, const string& name) {
     if (!name.empty()) {
         if (blockHandler->RecursivelyGetReferenceOrNull(name) != nullptr)
             throw invalid_argument("Name '" + name + "' already exists");
-        blockHandler->References->AddReference(name, IntType::TYPE_ID, address);
+        blockHandler->References->AddReference(name, IntType::TYPE_ID, address, arrSize);
     }
     return address;
 }
@@ -55,7 +55,7 @@ void IntType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Lex
     if (DEBUG)
         cout << "Creating int overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
 
-    ADDR addr = IntType::Create(blockHandler, "");
+    ADDR addr = IntType::Create(blockHandler, "", 1);
     if (overwrite_with.Type != IntLiteral) {
         throw invalid_argument("Only IntLiterals are supported for overwriting");
     }
@@ -70,7 +70,7 @@ void IntType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR over
 }
 
 int IntType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op, const LexicalResult& literalValue, ADDR out_addr) {
-    ADDR addr = IntType::Create(blockHandler, "");
+    ADDR addr = IntType::Create(blockHandler, "", 1);
     if (literalValue.Type != IntLiteral) { throw invalid_argument("Only IntLiterals supported"); }
     IntType::StaticAssign(blockHandler, addr, stois(literalValue.Value));
     return IntType::Modify(blockHandler, to_modify, op, addr, out_addr);

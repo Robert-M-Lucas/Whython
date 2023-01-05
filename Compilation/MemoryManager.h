@@ -20,7 +20,7 @@ private:
     string name;
 
 public:
-    explicit MemoryManager(string name = "No name") {
+    explicit MemoryManager(string name) {
         MemoryManager::name = name;
     }
 

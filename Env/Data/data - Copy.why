@@ -2,25 +2,20 @@ int f = 0
 int b = 0
 int i = 0
 
-char _f = "f"
-char _b = "b"
-char _x = "x"
-
-while i != 1000
+while i != 100
     i += 1
     f += 1
     b += 1
 
+    bool r = false
     if f == 3
+        r = true
         f = 0
-        if b == 5
-            b = 0
-            out _x
-        else
-            out _f
-    else
-        if b == 5
-            b = 0
-            out _b
-        else
-            out i
+        out "f"
+    if b == 5
+        r = true
+        b = 0
+        out "b"
+    if r == false
+        out i
+    outnl " "

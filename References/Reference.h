@@ -14,11 +14,13 @@ public:
     string Name;
     unsigned short TypeID;
     int Address;
+    int Size;
 
-    Reference(string name, unsigned short typeID, int address) {
+    Reference(string name, unsigned short typeID, int address, int size = 1) {
         Name = name;
         TypeID = typeID;
         Address = address;
+        Size = size;
     }
 };
 

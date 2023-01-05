@@ -13,4 +13,17 @@ using namespace std;
 
 int stois(const std::string& str);
 
+class ArrData {
+public:
+    string Name;
+    int Position;
+
+    ArrData(string name, int position) {
+        Name = name;
+        Position = position;
+    }
+};
+
+ArrData GetArrData(string arrMember);
+
 #endif //PLANG3_COMMON_H

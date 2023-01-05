@@ -27,9 +27,9 @@ void MemOut(int size, BYTE* data) {
 void Execute(CompileResult compiled) {
     if (DEBUG) {
         cout << "Executing program with program size " << compiled.p_size << endl;
-        MemOut(compiled.v_size, compiled.v_memory);
         cout << "VarMem" << endl;
-
+        MemOut(compiled.v_size, compiled.v_memory);
+        cout << endl;
 
         cout << "ProgMem" << endl;
         MemOut(compiled.p_size, compiled.p_memory);
@@ -50,8 +50,12 @@ void Execute(CompileResult compiled) {
             compiled.v_memory[address] = compiled.p_memory[i + 2]; // Write value to addr
             i += 3;
         }
-        else if (code == 1 || code == 10) { // * OUT
+        else if (code == 1 || code == 10 || code == 12) { // * OUT
             ADDR address = bytesToShort(compiled.p_memory + i); // Read addr
+
+            if (code == 12)
+                cout << F_ENDL;
+
             unsigned short type = bytesToShort(compiled.p_memory + (i + 2));
             switch (type) {
                 case 0: // OUT INT
@@ -202,6 +206,18 @@ void Execute(CompileResult compiled) {
                 i = goto_address;
             else
                 i += 4;
+        }
+        else if (code == 11) { // * AND
+            ADDR to_modify = bytesToShort(compiled.p_memory + i);
+            ADDR modify_with = bytesToShort(compiled.p_memory + (i + 2));
+            ADDR out_addr = bytesToShort(compiled.p_memory + (i + 4));
+
+            if (compiled.v_memory[to_modify] == BOOL_TRUE && compiled.v_memory[modify_with] == BOOL_TRUE)
+                compiled.v_memory[out_addr] = BOOL_TRUE;
+            else
+                compiled.v_memory[out_addr] = BOOL_FALSE;
+
+            i += 6;
         }
         else {
             cout << "UNSUPPORTED INSTRUCTION - " << (int) code << endl;

@@ -13,10 +13,11 @@ public:
     const unsigned short TYPE_ID = 1;
 
     unsigned short GetID() override { return TYPE_ID; }
+    unsigned short GetSize() override { return 1; }
 
     string GetIdentifier() override { return "bool"; }
 
-    ADDR Create(BlockHandler* blockHandler, const string& name) override;
+    ADDR Create(BlockHandler *blockHandler, const string &name, int arrSize) override;
 
     void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) override {
         if (literalValue.Type != IntLiteral && literalValue.Type != BoolLiteral) { throw invalid_argument("Only bool and int literals supported for assignment"); }

@@ -24,8 +24,8 @@ Reference *ReferenceHandler::GetReferenceOrNull(const string &referenceName) {
     return nullptr;
 }
 
-void ReferenceHandler::AddReference(const string& name, unsigned short typeID, int address) {
-    references.push_back(new Reference(name, typeID, address));
+void ReferenceHandler::AddReference(const string& name, unsigned short typeID, int address, int size) {
+    references.push_back(new Reference(name, typeID, address, size));
 }
 
 /*

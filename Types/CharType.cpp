@@ -17,7 +17,7 @@ extern bool DEBUG;
 
 using namespace std;
 
-ADDR CharType::Create(BlockHandler* blockHandler, const string& name) {
+ADDR CharType::Create(BlockHandler *blockHandler, const string &name, int arrSize) {
     ADDR address = blockHandler->VManager->Alloc(1);
 
     if (DEBUG)
@@ -26,7 +26,7 @@ ADDR CharType::Create(BlockHandler* blockHandler, const string& name) {
     if (!name.empty()) {
         if (blockHandler->RecursivelyGetReferenceOrNull(name) != nullptr)
             throw invalid_argument("Name '" + name + "' already exists");
-        blockHandler->References->AddReference(name, CharType::TYPE_ID, address);
+        blockHandler->References->AddReference(name, CharType::TYPE_ID, address, arrSize);
     }
     return address;
 }
@@ -63,7 +63,7 @@ void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Le
     if (DEBUG)
         cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
 
-    ADDR addr = CharType::Create(blockHandler, "");
+    ADDR addr = CharType::Create(blockHandler, "", 1);
     if (overwrite_with.Type == StringLiteral) {
         if (overwrite_with.Value.size() != 1)
             throw invalid_argument("Only StringLiterals of size 1 supported for overwriting");
@@ -85,7 +85,7 @@ void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR ove
 }
 
 int CharType::Modify(BlockHandler* blockHandler, ADDR to_modify, const string& op, const LexicalResult& literalValue, ADDR out_addr) {
-    ADDR addr = CharType::Create(blockHandler, "");
+    ADDR addr = CharType::Create(blockHandler, "", 1);
 
     if (literalValue.Type == StringLiteral) {
         if (literalValue.Value.size() != 1)

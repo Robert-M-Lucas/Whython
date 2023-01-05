@@ -9,7 +9,7 @@
 
 using namespace std;
 
-enum LexicalResultType { Blocker, Assigner, Name, Keyword, StringLiteral, IntLiteral, BoolLiteral, Type, Operator, Empty };
+enum LexicalResultType { Blocker, Assigner, Name, ArrName, ArrMember, Keyword, StringLiteral, IntLiteral, BoolLiteral, Type, Operator, Empty };
 
 class LexicalResult {
 public:

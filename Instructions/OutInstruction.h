@@ -15,10 +15,14 @@ using namespace std;
 
 class OutInstruction {
 public:
-    static vector<unsigned char> Build(ADDR address, unsigned short type, bool new_line = false) {
+    static vector<unsigned char> Build(ADDR address, unsigned short type, bool new_line = false, bool nl_before = false) {
         BYTE CODE = 1;
-        if (new_line)
+        if (new_line) {
             CODE += 9;
+            if (nl_before) {
+                CODE += 2;
+            }
+        }
 
         vector<unsigned char> data;
         data.push_back(CODE);

@@ -15,10 +15,11 @@ public:
     const unsigned short TYPE_ID = 0;
 
     unsigned short GetID() override { return TYPE_ID; }
+    unsigned short GetSize() override { return 4; }
 
     string GetIdentifier() override { return "int"; }
 
-    ADDR Create(BlockHandler* blockHandler, const string& name) override;
+    ADDR Create(BlockHandler *blockHandler, const string &name, int arrSize) override;
 
     void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) override {
         if (literalValue.Type != IntLiteral) { throw invalid_argument("Only int literals supported for assignment"); }

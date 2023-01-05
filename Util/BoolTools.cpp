@@ -11,7 +11,7 @@ ADDR ExpressionToBoolReference(BlockHandler *blockHandler, const LexicalResult &
     ADDR lhs_addr = reference->Address;
 
     AbstractType* type = TypeGetter().GetTypeByID(reference->TypeID);
-    ADDR out_bool = type->Create(blockHandler, "");
+    ADDR out_bool = type->Create(blockHandler, "", 1);
 
     BoolType boolType = BoolType();
 

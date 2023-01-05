@@ -14,10 +14,11 @@ public:
     const unsigned short TYPE_ID = 2;
 
     unsigned short GetID() override { return TYPE_ID; }
+    unsigned short GetSize() override { return 1; }
 
     string GetIdentifier() override { return "char"; }
 
-    ADDR Create(BlockHandler* blockHandler, const string& name) override;
+    ADDR Create(BlockHandler *blockHandler, const string &name, int arrSize) override;
 
     void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) override;
 

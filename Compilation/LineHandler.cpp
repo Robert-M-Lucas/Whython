@@ -13,21 +13,63 @@
 // #define dim(x) (sizeof(dim_helper(x)))
 
 void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
+    for (auto & i : parsedLine) {
+        if (i.Type == Name) {
+            Reference* ref = blockHandler->RecursivelyGetReferenceOrNull(i.Value);
+            if (ref == nullptr) continue;
+            if (ref->Size != 1)
+                throw invalid_argument("Array cannot be treated as Name");
+        }
+        else if (i.Type == ArrMember) {
+            ArrData arrData = GetArrData(i.Value);
+            Reference* ref = blockHandler->RecursivelyGetReferenceOrNull(arrData.Name);
+            if (ref == nullptr) continue;
+            if (ref->Size == 1)
+                throw invalid_argument("Name cannot be treated as Array");
+            else if (ref->Size <= arrData.Position)
+                throw invalid_argument("Index out of array range");
+        }
+    }
+
     // * Start with type e.g. int a = 2
     if (parsedLine.at(0).Type == Type) {
+        // * int a = 1
         if (parsedLine.size() == 4) {
-            if (parsedLine[1].Type != Name || parsedLine[2].Type != Assigner) {
-                throw invalid_argument("A type must be followed by a name, assigner or literal");
+            if (parsedLine[1].Type == Name) { // * int a = 1
+                if (parsedLine[2].Type != Assigner) {
+                    throw invalid_argument("A type must be followed by a name, assigner or literal");
+                }
+
+                if (parsedLine[2].Value == "=") {
+                    AbstractType *type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
+
+                    ADDR addr = type->Create(blockHandler, parsedLine[1].Value, 1);
+                    type->Assign(blockHandler, addr, parsedLine[3]);
+                } else
+                    throw invalid_argument("Initialisation must be done using an '='");
             }
+            else if (parsedLine[1].Type == ArrName) { // * int a[] = 1
+                if (parsedLine[2].Value != "=")
+                    throw invalid_argument("Initialisation must be done using an '='");
+                if (parsedLine[3].Type != IntLiteral)
+                    throw invalid_argument("Arrays must be initialised with an IntLiteral value denoting its size");
 
-            if (parsedLine[2].Value == "=") {
+                int arr_size = stois(parsedLine[3].Value);
+                if (arr_size <= 1)
+                    throw invalid_argument("Arrays must have a size greater than 1");
+
                 AbstractType *type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
+                ADDR arr_addr = type->Create(blockHandler, parsedLine[1].Value, arr_size);
 
-                ADDR addr = type->Create(blockHandler, parsedLine[1].Value);
-                type->Assign(blockHandler, addr, parsedLine[3]);
-            } else
-                throw invalid_argument("Initialisation must be done using an '='");
+                for (int i = 1; i < arr_size; i++) {
+                    type->Create(blockHandler, "", arr_size);
+                }
+            }
+            else {
+                throw invalid_argument("A type must be followed by a name");
+            }
         }
+        // * int a = b + 1
         else if (parsedLine.size() == 6) {
             if (parsedLine[1].Type != Name || parsedLine[2].Type != Assigner || parsedLine[2].Value != "="
                     || parsedLine[3].Type != Name || parsedLine[4].Type != Operator) {
@@ -35,7 +77,7 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
             }
 
             AbstractType* type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
-            ADDR addr = type->Create(blockHandler, parsedLine[1].Value);
+            ADDR addr = type->Create(blockHandler, parsedLine[1].Value, 1);
             Reference* lhs = blockHandler->RecursivelyGetReference(parsedLine[3].Value);
             AbstractType* type2 = TypeGetter().GetTypeByID(lhs->TypeID);
 
@@ -58,60 +100,125 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
         }
     }
     // * Start with name e.g. a += 2
-    else if (parsedLine.at(0).Type == Name) {
+    else if (parsedLine.at(0).Type == Name || parsedLine.at(0).Type == ArrMember) {
         if (parsedLine.size() < 3 || parsedLine[1].Type != Assigner)
             throw invalid_argument("A name must be followed by an assigner and a value");
 
         if (parsedLine.size() == 5) { // * a = b + 1
             if (parsedLine[1].Value != "=" || parsedLine[3].Type != Operator)
                 throw invalid_argument("Invalid syntax");
-            if (parsedLine[2].Type != Name)
-                throw invalid_argument("LHS must be name");
+            if (parsedLine[2].Type != Name && parsedLine[2].Type != ArrMember)
+                throw invalid_argument("LHS must be Name or ArrMember");
 
-            Reference* r1 = blockHandler->RecursivelyGetReference(parsedLine[0].Value);
-            Reference* r2 = blockHandler->RecursivelyGetReference(parsedLine[2].Value);
-            AbstractType* type = TypeGetter().GetTypeByID(r2->TypeID);
 
-            if (parsedLine[4].Type == Name) {
-                Reference* r3 = blockHandler->RecursivelyGetReference(parsedLine[4].Value);
+            string r1_name = parsedLine[0].Value;
+            int r1_offset = 0;
+            if (parsedLine[0].Type == ArrMember) {
+                ArrData arrData = GetArrData(parsedLine[0].Value);
+                r1_name = arrData.Name;
+                r1_offset = arrData.Position;
+            }
+            string r2_name = parsedLine[2].Value;
+            int r2_offset = 0;
+            if (parsedLine[2].Type == ArrMember) {
+                ArrData arrData = GetArrData(parsedLine[2].Value);
+                r2_name = arrData.Name;
+                r2_offset = arrData.Position;
+            }
+
+            Reference* r1 = blockHandler->RecursivelyGetReference(r1_name);
+            Reference* r2 = blockHandler->RecursivelyGetReference(r2_name);
+            AbstractType* type1 = TypeGetter().GetTypeByID(r1->TypeID);
+            AbstractType* type2 = TypeGetter().GetTypeByID(r2->TypeID);
+
+            if (parsedLine[4].Type == Name || parsedLine[4].Type == ArrMember) {
+                string r3_name = parsedLine[4].Value;
+                int r3_offset = 0;
+                if (parsedLine[4].Type == ArrMember) {
+                    ArrData arrData = GetArrData(parsedLine[4].Value);
+                    r3_name = arrData.Name;
+                    r3_offset = arrData.Position;
+                }
+                Reference* r3 = blockHandler->RecursivelyGetReference(r3_name);
+                AbstractType* type3 = TypeGetter().GetTypeByID(r3->TypeID);
                 if (r2->TypeID != r3->TypeID)
                     throw invalid_argument("Type mismatch");
-                int return_type = type->Modify(blockHandler, r2->Address, parsedLine[3].Value, r3->Address, r1->Address);
+                int return_type = type2->Modify(blockHandler, r2->Address + (r2_offset * type2->GetSize()), parsedLine[3].Value,
+                                               r3->Address + (r3_offset * type3->GetSize()), r1->Address + (r1_offset * type1->GetSize()));
                 if (return_type != r1->TypeID)
                     throw invalid_argument("Type mismatch");
             }
             else {
-                int return_type = type->Modify(blockHandler, r2->Address, parsedLine[3].Value, parsedLine[4], r1->Address);
+                int return_type = type1->Modify(blockHandler, r2->Address + (r2_offset * type2->GetSize()),
+                                               parsedLine[3].Value, parsedLine[4], r1->Address + (r1_offset * type1->GetSize()));
                 if (r1->TypeID != return_type)
                     throw invalid_argument("Type mismatch");
             }
         }
         else if (parsedLine[1].Value == "=") { // * a = 1
-            if (parsedLine[2].Type == Name) {
-                Reference* r1 = blockHandler->RecursivelyGetReference(parsedLine[0].Value);
-                Reference* r2 = blockHandler->RecursivelyGetReference(parsedLine[2].Value);
+            if (parsedLine[2].Type == Name || parsedLine[2].Type == ArrMember) {
+                string r1_name = parsedLine[0].Value;
+                int r1_offset = 0;
+                if (parsedLine[0].Type == ArrMember) {
+                    ArrData arrData = GetArrData(parsedLine[0].Value);
+                    r1_name = arrData.Name;
+                    r1_offset = arrData.Position;
+                }
+                string r2_name = parsedLine[2].Value;
+                int r2_offset = 0;
+                if (parsedLine[2].Type == ArrMember) {
+                    ArrData arrData = GetArrData(parsedLine[2].Value);
+                    r2_name = arrData.Name;
+                    r2_offset = arrData.Position;
+                }
+                Reference* r1 = blockHandler->RecursivelyGetReference(r1_name);
+                Reference* r2 = blockHandler->RecursivelyGetReference(r2_name);
+                AbstractType* type1 = TypeGetter().GetTypeByID(r1->TypeID);
+                AbstractType* type2 = TypeGetter().GetTypeByID(r2->TypeID);
                 if (r1->TypeID == r2->TypeID) {
-                    AbstractType* type = TypeGetter().GetTypeByID(r1->TypeID);
-                    type->Overwrite(blockHandler, r1->Address, r2->Address);
+                    type1->Overwrite(blockHandler, r1->Address + (r1_offset * type1->GetSize()),
+                                     r2->Address + (r2_offset * type2->GetSize()));
                 }
                 else
                     throw invalid_argument("Objects can only be set to objects of the same time");
             }
             else {
-                Reference* r1 = blockHandler->RecursivelyGetReference(parsedLine[0].Value);
-                AbstractType* type = TypeGetter().GetTypeByID(r1->TypeID);
-                type->Overwrite(blockHandler, r1->Address, parsedLine[2]);
+                string r1_name = parsedLine[0].Value;
+                int r1_offset = 0;
+                if (parsedLine[0].Type == ArrMember) {
+                    ArrData arrData = GetArrData(parsedLine[0].Value);
+                    r1_name = arrData.Name;
+                    r1_offset = arrData.Position;
+                }
+                Reference* r1 = blockHandler->RecursivelyGetReference(r1_name);
+                AbstractType* type1 = TypeGetter().GetTypeByID(r1->TypeID);
+                type1->Overwrite(blockHandler, r1->Address + (r1_offset * type1->GetSize()), parsedLine[2]);
             }
         }
         else if (parsedLine[1].Value.size() == 2 && parsedLine[1].Value[1] == '=') { // * a += 1
-            Reference* r = blockHandler->RecursivelyGetReference(parsedLine[0].Value);
-            AbstractType* type = TypeGetter().GetTypeByID(r->TypeID);
-            if (parsedLine[2].Type == Name) {
-                Reference* r2 = blockHandler->RecursivelyGetReference(parsedLine[2].Value);
-                type->Modify(blockHandler, r->Address, parsedLine[1].Value.substr(0, 1), r2->Address, r->Address);
+            string r1_name = parsedLine[0].Value;
+            int r1_offset = 0;
+            if (parsedLine[0].Type == ArrMember) {
+                ArrData arrData = GetArrData(parsedLine[0].Value);
+                r1_name = arrData.Name;
+                r1_offset = arrData.Position;
+            }
+            Reference* r1 = blockHandler->RecursivelyGetReference(r1_name);
+            AbstractType* type1 = TypeGetter().GetTypeByID(r1->TypeID);
+            if (parsedLine[2].Type == Name || parsedLine[2].Type == ArrMember) {
+                string r2_name = parsedLine[2].Value;
+                int r2_offset = 0;
+                if (parsedLine[2].Type == ArrMember) {
+                    ArrData arrData = GetArrData(parsedLine[2].Value);
+                    r2_name = arrData.Name;
+                    r2_offset = arrData.Position;
+                }
+                Reference* r2 = blockHandler->RecursivelyGetReference(r2_name);
+                AbstractType* type2 = TypeGetter().GetTypeByID(r2->TypeID);
+                type1->Modify(blockHandler, r1->Address + (r1_offset * type1->GetSize()), parsedLine[1].Value.substr(0, 1), r2->Address + (r2_offset * type2->GetSize()), r1->Address + (r1_offset * type1->GetSize()));
             }
             else {
-                type->Modify(blockHandler, r->Address, parsedLine[1].Value.substr(0, 1), parsedLine[2], r->Address);
+                type1->Modify(blockHandler, r1->Address + (r1_offset * type1->GetSize()), parsedLine[1].Value.substr(0, 1), parsedLine[2], r1->Address + (r1_offset * type1->GetSize()));
             }
         }
         else {
@@ -120,7 +227,7 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
     }
     // * Start with keyword e.g. out a
     else if (parsedLine.at(0).Type == Keyword) {
-        if (parsedLine[0].Value == "out" || parsedLine[0].Value == "outnl") {
+        if (parsedLine[0].Value == "out" || parsedLine[0].Value == "outnl" || parsedLine[0].Value == "nlout") {
             ADDR addr;
             unsigned short typeID;
 
@@ -132,13 +239,22 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
                 addr = ref->Address;
                 typeID = ref -> TypeID;
             }
+            else if (parsedLine[1].Type == ArrMember) {
+                int r1_offset = 0;
+                ArrData arrData = GetArrData(parsedLine[1].Value);
+                string r_name = arrData.Name;
+                r1_offset = arrData.Position;
+                Reference* ref = blockHandler->RecursivelyGetReference(r_name);
+                typeID = ref->TypeID;
+                addr = ref->Address + (r1_offset * TypeGetter().GetTypeByID(typeID)->GetSize());
+            }
             else if (parsedLine[1].Type == IntLiteral) {
-                addr = IntType().Create(blockHandler, "");
+                addr = IntType().Create(blockHandler, "", 1);
                 IntType::StaticAssign(blockHandler, addr, stois(parsedLine[1].Value));
                 typeID = IntType().TYPE_ID;
             }
             else if (parsedLine[1].Type == StringLiteral && parsedLine[1].Value.size() == 1) {
-                addr = CharType().Create(blockHandler, "");
+                addr = CharType().Create(blockHandler, "", 1);
                 CharType::StaticAssign(blockHandler, addr, parsedLine[1].Value[0]);
                 typeID = CharType().TYPE_ID;
             }
@@ -146,7 +262,8 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
                 throw invalid_argument("Unsupported out type");
             }
 
-            blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl"));
+            blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl" || parsedLine[0].Value == "nlout",
+                                                                 parsedLine[0].Value == "nlout"));
         }
         else {
             throw invalid_argument("Keyword '" + parsedLine[0].Value + "' not supported");

@@ -20,7 +20,7 @@ class ReferenceHandler {
 private:
     vector<Reference*> references;
 public:
-    void AddReference(const string& name, unsigned short typeID, int address);
+    void AddReference(const string& name, unsigned short typeID, int address, int size = 1);
     // int AddUnnamedReference(unsigned short typeID, int address);
 
     Reference* GetReference(const string& referenceName);

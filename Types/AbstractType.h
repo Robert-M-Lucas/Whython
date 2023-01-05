@@ -15,10 +15,11 @@ using namespace std;
 class AbstractType {
 public:
     virtual unsigned short GetID() { return USHRT_MAX; }
+    virtual unsigned short GetSize() { return 0; }
 
     virtual string GetIdentifier() { return ""; }
 
-    virtual ADDR Create(BlockHandler* blockHandler, const string& name) { return 0; }
+    virtual ADDR Create(BlockHandler *blockHandler, const string &name, int arrSize) { return 0; }
 
     virtual void Assign(BlockHandler* blockHandler, ADDR address, const LexicalResult& literalValue) {}
 
