@@ -51,19 +51,35 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
             else if (parsedLine[1].Type == ArrName) { // * int a[] = 1
                 if (parsedLine[2].Value != "=")
                     throw invalid_argument("Initialisation must be done using an '='");
-                if (parsedLine[3].Type != IntLiteral)
-                    throw invalid_argument("Arrays must be initialised with an IntLiteral value denoting its size");
+                if (parsedLine[3].Type == IntLiteral) {
 
-                int arr_size = stois(parsedLine[3].Value);
-                if (arr_size <= 1)
-                    throw invalid_argument("Arrays must have a size greater than 1");
+                    int arr_size = stois(parsedLine[3].Value);
+                    if (arr_size <= 1)
+                        throw invalid_argument("Arrays must have a size greater than 1");
 
-                AbstractType *type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
-                ADDR arr_addr = type->Create(blockHandler, parsedLine[1].Value, arr_size);
+                    AbstractType *type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
+                    // ? Needed to create reference
+                    ADDR arr_addr = type->Create(blockHandler, parsedLine[1].Value, arr_size);
 
-                for (int i = 1; i < arr_size; i++) {
-                    type->Create(blockHandler, "", arr_size);
+                    for (int i = 1; i < arr_size; i++) {
+                        type->Create(blockHandler, "", arr_size);
+                    }
                 }
+                else if (parsedLine[3].Type == StringLiteral) {
+                    if (parsedLine[0].Value != "char")
+                        throw invalid_argument("A StringLiteral can only be used to initialise a char array");
+
+                    AbstractType *type = TypeGetter().GetTypeByIdentifier(parsedLine[0].Value);
+                    ADDR arr_addr = type->Create(blockHandler, parsedLine[1].Value, parsedLine[3].Value.size());
+                    type->Assign(blockHandler, arr_addr, {StringLiteral, parsedLine[3].Depth, parsedLine[3].Value.substr(0, 1)});
+
+                    for (int i = 1; i < parsedLine[3].Value.size(); i++) {
+                        ADDR el_addr = type->Create(blockHandler, "", parsedLine[3].Value.size());
+                        type->Assign(blockHandler, el_addr, {StringLiteral ,parsedLine[3].Depth, parsedLine[3].Value.substr(i, 1)});
+                    }
+                }
+                else
+                    throw invalid_argument("Arrays must be initialised with an IntLiteral value denoting its size. A StringLiteral can be used for char arrays");
             }
             else {
                 throw invalid_argument("A type must be followed by a name");
@@ -230,6 +246,7 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
         if (parsedLine[0].Value == "out" || parsedLine[0].Value == "outnl" || parsedLine[0].Value == "nlout") {
             ADDR addr;
             unsigned short typeID;
+            bool default_out = true;
 
             if (parsedLine.size() != 2)
                 throw invalid_argument("Out must be followed something");
@@ -258,11 +275,30 @@ void HandleLine(vector<LexicalResult> parsedLine, BlockHandler* blockHandler) {
                 CharType::StaticAssign(blockHandler, addr, parsedLine[1].Value[0]);
                 typeID = CharType().TYPE_ID;
             }
+            else if (parsedLine[1].Type == StringLiteral) {
+                default_out = false;
+                cout << parsedLine[1].Value;
+
+                for (int i = 0; i < parsedLine[1].Value.size(); i++) {
+                    addr = CharType().Create(blockHandler, "", 1);
+                    CharType::StaticAssign(blockHandler, addr, parsedLine[1].Value[i]);
+                    typeID = CharType().TYPE_ID;
+                    if (i == 0)
+                        blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "nlout",
+                                                                         parsedLine[0].Value == "nlout"));
+                    else if (i != parsedLine[1].Value.size() - 2)
+                        blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl"));
+                    else
+                        blockHandler->PManager->Append(OutInstruction::Build(addr, typeID));
+
+                }
+            }
             else {
                 throw invalid_argument("Unsupported out type");
             }
 
-            blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl" || parsedLine[0].Value == "nlout",
+            if (default_out)
+                blockHandler->PManager->Append(OutInstruction::Build(addr, typeID, parsedLine[0].Value == "outnl" || parsedLine[0].Value == "nlout",
                                                                  parsedLine[0].Value == "nlout"));
         }
         else {

@@ -1,4 +1,21 @@
-bool b = false
-bool c = false
-if b & c
-    out 1
+int f = 0
+int b = 0
+int i = 0
+
+while i != 100
+    i += 1
+    f += 1
+    b += 1
+
+    bool r = false
+    if f == 3
+        r = true
+        f = 0
+        out "fizz"
+    if b == 5
+        r = true
+        b = 0
+        out "buzz"
+    if r == false
+        out i
+    outnl " "
