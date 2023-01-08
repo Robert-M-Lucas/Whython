@@ -22,7 +22,7 @@ ADDR BoolType::Create(BlockHandler *blockHandler, const string &name, int arrSiz
     ADDR address = blockHandler->VManager->Alloc(1);
 
     if (DEBUG)
-        cout << "Allocating bool [" << name << ":" << address << "]" << endl;
+        cout << "Allocating bool [" << name << ":" << address << "]" << F_ENDL;
 
     if (!name.empty()) {
         if (blockHandler->RecursivelyGetReferenceOrNull(name) != nullptr)
@@ -34,7 +34,7 @@ ADDR BoolType::Create(BlockHandler *blockHandler, const string &name, int arrSiz
 
 void BoolType::Assign(BlockHandler* blockHandler, ADDR address, bool value) {
     if (DEBUG)
-        cout << "Creating bool assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating bool assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     BYTE b_value;
     if (value)
@@ -47,7 +47,7 @@ void BoolType::Assign(BlockHandler* blockHandler, ADDR address, bool value) {
 
 void BoolType::StaticAssign(BlockHandler* blockHandler, ADDR address, bool value) {
     if (DEBUG)
-        cout << "Creating static bool assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating static bool assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     BYTE b_value;
     if (value)
@@ -60,7 +60,7 @@ void BoolType::StaticAssign(BlockHandler* blockHandler, ADDR address, bool value
 
 void BoolType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const LexicalResult& overwrite_with) {
     if (DEBUG)
-        cout << "Creating bool overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
+        cout << "Creating bool overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << F_ENDL;
 
     ADDR addr = BoolType::Create(blockHandler, "", 1);
     if (overwrite_with.Type != IntLiteral && overwrite_with.Type != BoolLiteral) {
@@ -75,7 +75,7 @@ void BoolType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Le
 
 void BoolType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR overwrite_with) {
     if (DEBUG)
-        cout << "Creating bool overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << endl;
+        cout << "Creating bool overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << F_ENDL;
     blockHandler->PManager->Append(CopyInstruction::Build(overwrite_with, to_overwrite, 1));
 }
 

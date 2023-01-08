@@ -21,7 +21,7 @@ ADDR CharType::Create(BlockHandler *blockHandler, const string &name, int arrSiz
     ADDR address = blockHandler->VManager->Alloc(1);
 
     if (DEBUG)
-        cout << "Allocating char [" << name << ":" << address << "]" << endl;
+        cout << "Allocating char [" << name << ":" << address << "]" << F_ENDL;
 
     if (!name.empty()) {
         if (blockHandler->RecursivelyGetReferenceOrNull(name) != nullptr)
@@ -33,7 +33,7 @@ ADDR CharType::Create(BlockHandler *blockHandler, const string &name, int arrSiz
 
 void CharType::Assign(BlockHandler* blockHandler, ADDR address, char value) {
     if (DEBUG)
-        cout << "Creating char assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating char assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     blockHandler->PManager->Append(WriteInstruction::Build(address, value));
 }
@@ -54,14 +54,14 @@ void CharType::Assign(BlockHandler *blockHandler, ADDR address, const LexicalRes
 
 void CharType::StaticAssign(BlockHandler* blockHandler, ADDR address, char value) {
     if (DEBUG)
-        cout << "Creating static char assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating static char assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     blockHandler->VManager->Overwrite(address, reinterpret_cast<const unsigned char *>(&value), 1);
 }
 
 void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const LexicalResult& overwrite_with) {
     if (DEBUG)
-        cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
+        cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << F_ENDL;
 
     ADDR addr = CharType::Create(blockHandler, "", 1);
     if (overwrite_with.Type == StringLiteral) {
@@ -80,7 +80,7 @@ void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Le
 
 void CharType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR overwrite_with) {
     if (DEBUG)
-        cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << endl;
+        cout << "Creating char overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << F_ENDL;
     blockHandler->PManager->Append(CopyInstruction::Build(overwrite_with, to_overwrite, 1));
 }
 

@@ -12,12 +12,12 @@ using namespace std;
 
 void LoopBlock::OnEnter(BlockHandler *oldBlockHandler, BlockHandler *newBlockHandler,
                         const vector<LexicalResult> &entryLine) {
-    cout << "Enter block" << endl;
+    cout << "Enter block" << F_ENDL;
     entryAddr = newBlockHandler->PManager->GetCurrentPosition();
 }
 
 bool LoopBlock::OnExit(BlockHandler* blockHandler, const vector<LexicalResult>& exitingLine, int depthDelta) {
     blockHandler->PManager->Append(GotoInstruction::Build(entryAddr));
-    cout << "Exit block" << endl;
+    cout << "Exit block" << F_ENDL;
     return true;
 }

@@ -11,11 +11,11 @@ while i != 100
     if f == 3
         r = true
         f = 0
-        out "f"
+        out "fizz"
     if b == 5
         r = true
         b = 0
-        out "b"
+        out "buzz"
     if r == false
         out i
     outnl " "

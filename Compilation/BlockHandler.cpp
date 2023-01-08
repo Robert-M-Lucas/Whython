@@ -48,10 +48,10 @@ BlockHandler *BlockHandler::OnLineParsed(vector<LexicalResult> parsedLine) {
     // Go down depth (exit current block)
     if (parsedLine[0].Depth < Depth) {
         if (DEBUG)
-            cout << "Down depth" << endl;
+            cout << "Down depth" << F_ENDL;
         if (OnExit(parsedLine, Depth - parsedLine[0].Depth)) {
             if (DEBUG)
-                cout << "Down depth succeeded" << endl;
+                cout << "Down depth succeeded" << F_ENDL;
             BlockHandler* ret = Above->OnLineParsed(parsedLine);
             delete this;
             return ret;
@@ -64,7 +64,7 @@ BlockHandler *BlockHandler::OnLineParsed(vector<LexicalResult> parsedLine) {
     // Handle block
     if (parsedLine[0].Type == Blocker) {
         if (DEBUG)
-            cout << "Up depth" << endl;
+            cout << "Up depth" << F_ENDL;
         string blocker = parsedLine[0].Value;
         BlockController* new_controller;
         /*
@@ -100,6 +100,6 @@ BlockHandler::~BlockHandler() {
 
 bool BlockHandler::OnExit(const vector<LexicalResult>& exitingLine, int depthDelta) {
     if (Controller == nullptr)
-        cout << "Null controller" << endl;
+        cout << "Null controller" << F_ENDL;
     return Controller->OnExit(this, exitingLine, depthDelta);
 }

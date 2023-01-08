@@ -18,22 +18,22 @@ extern bool DEBUG;
 void MemOut(int size, BYTE* data) {
     for (int i = 0; i < size; i++) {
         if (i%8 == 0)
-            cout << endl;
+            cout << F_ENDL;
         cout << (int)data[i] << '|';
     }
-    cout << endl;
+    cout << F_ENDL;
 }
 
 void Execute(CompileResult compiled) {
     if (DEBUG) {
-        cout << "Executing program with program size " << compiled.p_size << endl;
-        cout << "VarMem" << endl;
+        cout << "Executing program with program size " << compiled.p_size << F_ENDL;
+        cout << "VarMem" << F_ENDL;
         MemOut(compiled.v_size, compiled.v_memory);
-        cout << endl;
+        cout << F_ENDL;
 
-        cout << "ProgMem" << endl;
+        cout << "ProgMem" << F_ENDL;
         MemOut(compiled.p_size, compiled.p_memory);
-        cout << endl;
+        cout << F_ENDL;
     }
 
     int i = 0;
@@ -42,7 +42,7 @@ void Execute(CompileResult compiled) {
         i++;
 
         if (DEBUG) {
-            cout << "Executing instruction with code " << (int)code << endl;
+            cout << "Executing instruction with code " << (int)code << F_ENDL;
         }
 
         if (code == 0) { // * WRITE
@@ -127,7 +127,7 @@ void Execute(CompileResult compiled) {
                     cout << tmp;
                 }
             }
-            cout << endl;
+            cout << F_ENDL;
              */
 
             // * Invert
@@ -220,7 +220,7 @@ void Execute(CompileResult compiled) {
             i += 6;
         }
         else {
-            cout << "UNSUPPORTED INSTRUCTION - " << (int) code << endl;
+            cout << "UNSUPPORTED INSTRUCTION - " << (int) code << F_ENDL;
         }
     }
 

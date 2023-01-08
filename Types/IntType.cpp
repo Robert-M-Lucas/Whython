@@ -23,7 +23,7 @@ ADDR IntType::Create(BlockHandler *blockHandler, const string &name, int arrSize
     ADDR address = blockHandler->VManager->Alloc(4);
 
     if (DEBUG)
-        cout << "Allocating int [" << name << ":" << address << "]" << endl;
+        cout << "Allocating int [" << name << ":" << address << "]" << F_ENDL;
 
     if (!name.empty()) {
         if (blockHandler->RecursivelyGetReferenceOrNull(name) != nullptr)
@@ -35,7 +35,7 @@ ADDR IntType::Create(BlockHandler *blockHandler, const string &name, int arrSize
 
 void IntType::Assign(BlockHandler* blockHandler, ADDR address, int value) {
     if (DEBUG)
-        cout << "Creating int assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating int assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     vector<BYTE> value_bytes = intToBytes(value);
     for (int i = 0; i < 4; i++) {
@@ -45,7 +45,7 @@ void IntType::Assign(BlockHandler* blockHandler, ADDR address, int value) {
 
 void IntType::StaticAssign(BlockHandler* blockHandler, ADDR address, int value) {
     if (DEBUG)
-        cout << "Creating static int assign instruction [" << value << ";" << address << "]" << endl;
+        cout << "Creating static int assign instruction [" << value << ";" << address << "]" << F_ENDL;
 
     vector<BYTE> value_bytes = intToBytes(value);
     blockHandler->VManager->Overwrite(address, value_bytes);
@@ -53,7 +53,7 @@ void IntType::StaticAssign(BlockHandler* blockHandler, ADDR address, int value) 
 
 void IntType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const LexicalResult& overwrite_with) {
     if (DEBUG)
-        cout << "Creating int overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << endl;
+        cout << "Creating int overwrite instruction [" << to_overwrite << ";" << overwrite_with.Value << "]" << F_ENDL;
 
     ADDR addr = IntType::Create(blockHandler, "", 1);
     if (overwrite_with.Type != IntLiteral) {
@@ -65,7 +65,7 @@ void IntType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, const Lex
 
 void IntType::Overwrite(BlockHandler* blockHandler, ADDR to_overwrite, ADDR overwrite_with) {
     if (DEBUG)
-        cout << "Creating int overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << endl;
+        cout << "Creating int overwrite instruction [" << to_overwrite << ";" << overwrite_with << "]" << F_ENDL;
     blockHandler->PManager->Append(CopyInstruction::Build(overwrite_with, to_overwrite, 4));
 }
 

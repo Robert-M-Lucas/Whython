@@ -17,6 +17,7 @@
 #include "BlockHandler.h"
 #include "../Preprocessing/LexicalAnalyser.h"
 #include "../Preprocessing/LexicalResult.h"
+#include "../Util/Conversions.h"
 
 class CompileResult {
 public:
@@ -24,6 +25,8 @@ public:
     BYTE* v_memory;
     int p_size;
     BYTE* p_memory;
+
+    CompileResult()= default;
 
     CompileResult(int v_size, BYTE* v_memory, int p_size, BYTE* p_memory) {
         CompileResult::v_size = v_size;
@@ -35,7 +38,7 @@ public:
 
 extern bool DEBUG;
 
-CompileResult Compile(char* file_location) {
+CompileResult Compile(char* file_location, const char* compiled_file_location = nullptr) {
     auto* VManager = new MemoryManager("VarMemory");
     auto* PManager = new MemoryManager("ProgMemory");
     auto* currentBlockHandler = new BlockHandler(nullptr, nullptr, PManager, VManager);
@@ -49,15 +52,15 @@ CompileResult Compile(char* file_location) {
     {
         while (getline(file, line)) {
             if (DEBUG)
-                cout << "Now processing: " << line << endl;
+                cout << "Now processing: " << line << F_ENDL;
             try {
                 vector<LexicalResult> result = LexicalAnalyser::ProcessLine(line);
                 if (result.empty()) { l++; continue; }
                 currentBlockHandler = currentBlockHandler->OnLineParsed(result);
             }
             catch (const exception& e) {
-                cout << "Error - Line " << l + 1 << ": " << endl;
-                cout << "    " << e.what() << endl;
+                cout << "Error - Line " << l + 1 << ": " << F_ENDL;
+                cout << "    " << e.what() << F_ENDL;
                 if (DEBUG)
                     throw e;
                 throw runtime_error("Compilation failed");
@@ -96,6 +99,24 @@ CompileResult Compile(char* file_location) {
     delete VManager;
     delete PManager;
     delete currentBlockHandler;
+
+    // * Save compiled file
+    if (compiled_file_location != nullptr) {
+        ofstream stream;
+        stream.open(compiled_file_location);
+        if (!stream)
+            cout << "Opening file '" << compiled_file_location << "' failed" << F_ENDL;
+        else {
+            vector<BYTE> size_bytes = intToBytes(v_size);
+            stream.write((char*) &(size_bytes.front()), 4);
+            stream.write((char*) v_memory, v_size);
+            stream.write((char*) p_memory, p_size);
+            if (DEBUG)
+                cout << v_size << F_ENDL << p_size << F_ENDL;
+            cout << "Saved compiled file" << F_ENDL;
+        }
+        stream.close();
+    }
 
     return {v_size, v_memory, p_size, p_memory};
 }

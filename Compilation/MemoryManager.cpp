@@ -29,7 +29,7 @@ ADDR MemoryManager::Alloc(int amount) {
     memory = new_memory;
 
     if (DEBUG)
-        cout << name << " size:" << m_size << endl;
+        cout << name << " size:" << m_size << F_ENDL;
 
     return position;
 }
@@ -66,10 +66,10 @@ void MemoryManager::DumpBytes() {
     ofstream stream;
     stream.open(name + " - dump.b");
     if (!stream)
-        cout << "Opening file failed" << endl;
+        cout << "Opening file failed" << F_ENDL;
     // use operator << for clarity
     stream.write((char*) memory, m_size);
     // test if write was successful - not *really* necessary
     if (!stream)
-        cout << "Write failed" << endl;
+        cout << "Write failed" << F_ENDL;
 }
